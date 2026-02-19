@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLOW | Haute Couture Beauty</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-card: #141414;
+            --text-main: #f0f0f0;
+            --text-muted: #888888;
+            --gold: #d4af37;
+            --gold-dim: #aa8c2c;
+            --border: rgba(255, 255, 255, 0.1);
+            --glass: rgba(20, 20, 20, 0.85);
+        }
+
+        * {
+            box-sizing: border-box;
+            cursor: none; /* Custom cursor */
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            transition: transform 0.1s ease;
+            mix-blend-mode: difference;
+        }
+        .cursor-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Header */
+        header {
+            padding: 40px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 10;
+        }
+
+        .brand {
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            letter-spacing: 4px;
+            color: var(--gold);
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .cart-trigger {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+        }
+        .cart-trigger:hover { color: var(--gold); }
+
+        /* Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 60px;
+            padding: 60px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Product Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .img-wrapper {
+            width: 100%;
+            height: 350px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease, filter 0.5s ease;
+            filter: grayscale(40%);
+        }
+
+        .product-card:hover img {
+            transform: scale(1.05);
+            filter: grayscale(0%);
+        }
+
+        .product-info {
+            padding: 25px;
+            text-align: center;
+        }
+
+        .product-title {
+            font-family: 'Cinzel', serif;
+            font-size: 1.1rem;
+            margin: 0 0 10px 0;
+            letter-spacing: 1px;
+        }
+
+        .product-desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+            font-weight: 300;
+        }
+
+        .product-price {
+            font-family: 'Lato', sans-serif;
+            color: var(--gold);
+            font-size: 1rem;
+            letter-spacing: 1px;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        /* Premium Button */
+        .btn-premium {
+            background: transparent;
+            border: 1px solid var(--text-muted);
+            color: var(--text-main);
+            padding: 12px 30px;
+            font-family: 'Lato', sans-serif;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+
+        .btn-premium::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 0%; height: 100%;
+            background: var(--gold);
+            transition: width 0.4s ease;
+            z-index: -1;
+        }
+
+        .btn-premium:hover {
+            border-color: var(--gold);
+            color: var(--bg-dark);
+        }
+
+        .btn-premium:hover::before {
+            width: 100%;
+        }
+
+        /* Cart Panel */
+        .cart-panel {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            padding: 40px;
+            height: fit-content;
+            position: sticky;
+            top: 40px;
+        }
+
+        .cart-header {
+            font-family: 'Cinzel', serif;
+            font-size: 1.4rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+            color: var(--gold);
+        }
+
+        .cart-items-container {
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        /* Scrollbar styling */
+        .cart-items-container::-webkit-scrollbar { width: 4px; }
+        .cart-items-container::-webkit-scrollbar-thumb { background: var(--border); }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.9rem;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cart-total {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--gold);
+            display: flex;
+            justify-content: space-between;
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            color: var(--text-main);
+        }
+
+        .checkout-btn {
+            background: var(--gold);
+            color: var(--bg-dark);
+            border: none;
+            width: 100%;
+            padding: 18px;
+            margin-top: 30px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background: var(--gold-dim);
+            transform: scale(1.02);
+        }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            font-style: italic;
+            font-size: 0.9rem;
+            margin-top: 50px;
+        }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--gold);
+            color: var(--bg-dark);
+            padding: 15px 40px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            opacity: 0;
+            transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 1000;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .toast.active {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .container { grid-template-columns: 1fr; padding: 30px; }
+            .products-grid { grid-template-columns: 1fr; }
+            .cart-panel { position: static; margin-top: 40px; }
+            header { padding: 30px; flex-direction: column; gap: 20px; text-align: center; }
+            .cursor, .cursor-dot { display: none; } /* Disable custom cursor on touch */
+            * { cursor: auto; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor Elements -->
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+
+    <header>
+        <div>
+            <div class="brand">GLOW</div>
+            <div class="subtitle">Haute Couture Beauty</div>
+        </div>
+        <div class="cart-trigger">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line></svg>
+            <span id="cart-count">BAG (0)</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Products -->
+        <div class="products-grid">
+            
+            <div class="product-card">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1625093742435-6fa192b6fb10?w=800&h=1000&fit=crop" alt="Lipstick">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Rouge Velvet</h3>
+                    <p class="product-desc">Matte finish with satin core</p>
+                    <span class="product-price">Ksh 850</span>
+                    <button class="btn-premium" onclick="addToCart('Rouge Velvet', 850)">Acquire</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1616683693504-3ea7e9ad6fec?w=800&h=1000&fit=crop" alt="Serum">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Elixir No. 5</h3>
+                    <p class="product-desc">Radiance boosting serum</p>
+                    <span class="product-price">Ksh 1500</span>
+                    <button class="btn-premium" onclick="addToCart('Elixir No. 5', 1500)">Acquire</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1512496015851-a90fb38ba796?w=800&h=1000&fit=crop" alt="Palette">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Noir Palette</h3>
+                    <p class="product-desc">Smokey eye essentials</p>
+                    <span class="product-price">Ksh 1200</span>
+                    <button class="btn-premium" onclick="addToCart('Noir Palette', 1200)">Acquire</button>
+                </div>
+            </div>
+
+            <div class="product-card">
+                <div class="img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=1000&fit=crop" alt="Blush">
+                </div>
+                <div class="product-info">
+                    <h3 class="product-title">Rose Dust</h3>
+                    <p class="product-desc">Illuminating cheek powder</p>
+                    <span class="product-price">Ksh 1000</span>
+                    <button class="btn-premium" onclick="addToCart('Rose Dust', 1000)">Acquire</button>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Cart -->
+        <div class="cart-panel">
+            <div class="cart-header">Selection</div>
+            <div class="cart-items-container" id="cart-items">
+                <div class="empty-state">Your selection is empty</div>
+            </div>
+            
+            <div class="cart-total">
+                <span>Total</span>
+                <span id="total">Ksh 0</span>
+            </div>
+
+            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Item Added to Collection</div>
+
+    <script>
+        // Custom Cursor Logic
+        const cursor = document.querySelector('.cursor');
+        const cursorDot = document.querySelector('.cursor-dot');
+
+        document.addEventListener('mousemove', (e) => {
+            cursorDot.style.left = e.clientX + 'px';
+            cursorDot.style.top = e.clientY + 'px';
+            
+            // Add slight delay to outer circle for fluid feel
+            setTimeout(() => {
+                cursor.style.left = (e.clientX - 10) + 'px';
+                cursor.style.top = (e.clientY - 10) + 'px';
+            }, 50);
+        });
+
+        document.addEventListener('mousedown', () => {
+            cursor.style.transform = 'scale(0.8)';
+            cursorDot.style.transform = 'scale(1.5)';
+        });
+
+        document.addEventListener('mouseup', () => {
+            cursor.style.transform = 'scale(1)';
+            cursorDot.style.transform = 'scale(1)';
+        });
+
+        // Cart Logic
+        let cart = [];
+        let totalAmount = 0;
+
+        function addToCart(name, price) {
+            cart.push({name, price});
+            totalAmount += price;
+            updateCart();
+            showToast(`Added ${name}`);
+        }
+
+        function updateCart() {
+            const container = document.getElementById('cart-items');
+            const countSpan = document.getElementById('cart-count');
+            
+            countSpan.innerText = `BAG (${cart.length})`;
+
+            if (cart.length === 0) {
+                container.innerHTML = '<div class="empty-state">Your selection is empty</div>';
+            } else {
+                container.innerHTML = '';
+                cart.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'cart-item';
+                    div.innerHTML = `
+                        <span>${item.name}</span>
+                        <span style="color: var(--gold)">Ksh ${item.price}</span>
+                    `;
+                    container.appendChild(div);
+                });
+            }
+
+            document.getElementById('total').innerText = `Ksh ${totalAmount.toLocaleString()}`;
+        }
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.innerText = message;
+            toast.classList.add('active');
+            setTimeout(() => {
+                toast.classList.remove('active');
+            }, 3000);
+        }
+
+        function checkout() {
+            if(cart.length === 0) {
+                showToast("Selection is empty");
+                return;
+            }
+            const btn = document.querySelector('.checkout-btn');
+            btn.innerText = "Processing...";
+            setTimeout(() => {
+                showToast("Order Confirmed");
+                cart = [];
+                totalAmount = 0;
+                updateCart();
+                btn.innerText = "Proceed to Checkout";
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
